@@ -168,7 +168,6 @@ public class CamControlManager : MonoBehaviour {
 
 		// 제목 셋팅 시작
 		god = GameObject.Find("God").GetComponent<TextFade>();
-		god.displayInfo = true;
 		originalMan = GameObject.Find("OriginalMan").GetComponent<TextFade>();
 		originalMan.displayInfo = false;
 		originalProblem = GameObject.Find("OriginalProblem").GetComponent<TextFade>();
@@ -183,6 +182,9 @@ public class CamControlManager : MonoBehaviour {
 
 		// 선악과 콜라이더 on off
 		forbiddenFruitsTree = GameObject.Find("tree-baobab").GetComponent<CapsuleCollider>();
+
+		// 페이지 시작
+		TurnSunNMoonOn();
 	}
 
 
@@ -297,22 +299,22 @@ public class CamControlManager : MonoBehaviour {
 
 			case 1:
 				anim_EdenRotation.SetBool("Rotate", true);
-				TurnSeeOn();
 				TurnEdenOff();
+				TurnSeeOn();
 				break;
 
 			case 2:
 				edenCam.SetActive(on);
 				// TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
-				TurnEdenOn();
 				TurnIdolOff();
+				TurnEdenOn();
 				break;
 
 			case 3:
 				idolCam.SetActive(on);
 				// TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
-				TurnIdolOn();
 				TurnGameAddictOff();
+				TurnIdolOn();
 				break;
 
 			case 4:
@@ -402,6 +404,8 @@ public class CamControlManager : MonoBehaviour {
 	void TurnSeeOn() {
 		audioSee.Play();
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerSunNMoon) | (1 << cullingLayerEden); 
+		originalMan.displayInfo = false;
+		originalProblem.displayInfo = false;
 		god.displayInfo = true;
 		StartCoroutine("WaitForSeeOn");
 	}
@@ -428,11 +432,6 @@ public class CamControlManager : MonoBehaviour {
 		edenLights.SetActive(true);
 		forbiddenFruitsTree.enabled = true;
 		problemsOfMan.displayInfo = false;
-		StartCoroutine("WaitForEdenOn");
-	}
-	IEnumerator WaitForEdenOn() {
-		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Gen0315");
 		if(edenSpotlight.enabled == false)
 		{
 			originalMan.displayInfo = true;
@@ -442,6 +441,11 @@ public class CamControlManager : MonoBehaviour {
 		{
 			originalProblem.displayInfo = true;
 		}
+		StartCoroutine("WaitForEdenOn");
+	}
+	IEnumerator WaitForEdenOn() {
+		yield return new WaitForSeconds(1f);
+		biblePopup.SendMessage("ChangeBible", "Gen0315");
 	}
 
 
@@ -462,6 +466,8 @@ public class CamControlManager : MonoBehaviour {
 	IEnumerator WaitForIdolOn() {
 		yield return new WaitForSeconds(1f);
 		biblePopup.SendMessage("ChangeBible", "Eph22");
+		originalProblem.displayInfo = false;
+		originalMan.displayInfo = false;
 		problemsOfMan.displayInfo = true;
 		yield return new WaitForSeconds(1f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol); 
@@ -480,6 +486,7 @@ public class CamControlManager : MonoBehaviour {
 	}
 	void TurnGameAddictOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerGameAddict); 
+		problemsOfMan.displayInfo = true;
 		StartCoroutine("WaitForGameAddictOn");
 	}
 	IEnumerator WaitForGameAddictOn() {
@@ -503,6 +510,7 @@ public class CamControlManager : MonoBehaviour {
 		audioDrugAddictLight.Stop();
 		drugAddictLight.enabled = false;
 		drugAddictLightS.SetActive(false);
+		problemsOfMan.displayInfo = true;
 		FadeBlockOnOff(1);
 	}
 	void TurnDrugAddictOn() {
@@ -533,6 +541,7 @@ public class CamControlManager : MonoBehaviour {
 	}
 	void TurnHospitalOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerHospital);
+		problemsOfMan.displayInfo = true;
 		StartCoroutine("WaitForHospitalOn");
 	}
 	IEnumerator WaitForHospitalOn() {

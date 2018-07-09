@@ -4,7 +4,7 @@
 QualitySettings:
   m_ObjectHideFlags: 0
   serializedVersion: 5
-  m_CurrentQuality: 3
+  m_CurrentQuality: 2
   m_QualitySettings:
   - serializedVersion: 2
     name: Fastest
@@ -193,5 +193,5 @@ QualitySettings:
     Windows Store Apps: 5
     XBOX360: 5
     XboxOne: 5
-    iPhone: 3
+    iPhone: 2
     tvOS: 5

@@ -84,7 +84,7 @@ public class ButtonTree : MonoBehaviour {
         {
             mainCamBackScript.backColorOn = true;
             if (edenSpotlight.enabled == false)
-            {
+            {	
                 StartCoroutine("WaitForEdenSpotlight");
             }
         }
@@ -104,12 +104,17 @@ public class ButtonTree : MonoBehaviour {
 
 	public void ChristSolved() 
 	{	
-		animWhiteDissolve.SetTrigger("OriginalSin");
 		animWhiteDissolve.SetBool("ClickTree", false);
 		audioLivingGodScary.Stop();
 		audioDrugAddictLight.Stop();
 		edenDirectlight.enabled = true;	
 		edenSpotlight.enabled = false;
 		edenMoodLightControl.MoodLightBright();
+		StartCoroutine("WaitForBackColorOn");
+	}
+	IEnumerator WaitForBackColorOn()
+	{
+		yield return new WaitForSeconds(2f);
+		mainCamBackScript.backColorOn = false;
 	}
 }
