@@ -27,6 +27,11 @@ public class ButtonTree : MonoBehaviour {
 	public EdenMoodLightController edenMoodLightControl;
 
 
+	// 제목 달기
+	public TextFade originalMan;
+	public TextFade originalProblem;
+
+
 
     void Start() 
 	{
@@ -44,6 +49,10 @@ public class ButtonTree : MonoBehaviour {
 		audioEden = GameObject.Find("EdenSoundPlayer").GetComponent<AudioSource>();
 		audioLivingGodScary = GetComponent<AudioSource>();
 		edenMoodLightControl = GameObject.Find("EdenMoodLight").GetComponent<EdenMoodLightController>();
+
+		// 제목달기
+		originalMan = GameObject.Find("OriginalMan").GetComponent<TextFade>();
+		originalProblem = GameObject.Find("OriginalProblem").GetComponent<TextFade>();
     }
 
 
@@ -58,7 +67,8 @@ public class ButtonTree : MonoBehaviour {
 			{
 				if(hit.transform.name == "tree-baobab")
                 {
-                    LeaveGod();
+                    originalMan.displayInfo = false;
+					LeaveGod();
                 }
             }
 		}
@@ -89,6 +99,7 @@ public class ButtonTree : MonoBehaviour {
 		edenSpotlight.enabled = true;
 		yield return new WaitForSeconds(0.3f);
 		audioLivingGodScary.Play();
+		originalProblem.displayInfo = true;
 	}
 
 	public void ChristSolved() 
