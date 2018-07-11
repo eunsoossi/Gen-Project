@@ -7,6 +7,11 @@ namespace Cinemachine
     [RequireComponent(typeof(CinemachineFreeLook))]
     class CinemachineFreeLookZoom : MonoBehaviour
     {
+        // 마우스 사용 / 모바일 터치 끔
+        public bool mouseOn;
+        private GameObject[] cMZoomCtrl;
+
+
         private CinemachineFreeLook freelook;
         public CinemachineFreeLook.Orbit[] originalOrbits = new CinemachineFreeLook.Orbit[0];
 
@@ -49,7 +54,18 @@ namespace Cinemachine
             }
         }
 
-
+        void Start()
+        {
+            cMZoomCtrl = GameObject.FindGameObjectsWithTag("VirtualCam");
+            if(mouseOn) 
+            {
+                for(int i = 0; i < cMZoomCtrl.Length; i++)
+		        {
+                    cMZoomCtrl[i].GetComponent<CMZoomCtrl>().enabled = false;
+                }
+            }
+        }
+        
         void Update()
         {
             if (freelook != null)

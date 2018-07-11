@@ -28,9 +28,10 @@ public class ButtonTree : MonoBehaviour {
 
 
 	// 제목 달기
+	public TextFade god;
 	public TextFade originalMan;
 	public TextFade originalProblem;
-
+	public TextFade problemsOfMan;
 
 
     void Start() 
@@ -51,8 +52,10 @@ public class ButtonTree : MonoBehaviour {
 		edenMoodLightControl = GameObject.Find("EdenMoodLight").GetComponent<EdenMoodLightController>();
 
 		// 제목달기
+		god = GameObject.Find("God").GetComponent<TextFade>();
 		originalMan = GameObject.Find("OriginalMan").GetComponent<TextFade>();
 		originalProblem = GameObject.Find("OriginalProblem").GetComponent<TextFade>();
+		problemsOfMan = GameObject.Find("ProblemsOfMan").GetComponent<TextFade>();
     }
 
 
@@ -93,13 +96,16 @@ public class ButtonTree : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(0.3f);
 		edenDirectlight.enabled = false;			
-		yield return new WaitForSeconds(2.5f);
+		yield return new WaitForSeconds(1.7f);
 		audioDrugAddictLight.Play();
 		yield return new WaitForSeconds(0.4f);
 		edenSpotlight.enabled = true;
-		yield return new WaitForSeconds(0.3f);
+		yield return new WaitForSeconds(0.4f);
+		if(god.displayInfo == false && problemsOfMan.displayInfo == false)
+		{
+			originalProblem.displayInfo = true;	
+		}
 		audioLivingGodScary.Play();
-		originalProblem.displayInfo = true;
 	}
 
 	public void ChristSolved() 
@@ -114,7 +120,7 @@ public class ButtonTree : MonoBehaviour {
 	}
 	IEnumerator WaitForBackColorOn()
 	{
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1.4f);
 		mainCamBackScript.backColorOn = false;
 	}
 }

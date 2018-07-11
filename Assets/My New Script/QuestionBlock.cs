@@ -13,8 +13,8 @@ public class QuestionBlock : MonoBehaviour {
 
 	// 블럭 사라짐 / 생김 효과
 	public bool canFadeBlock;
-	private Color alphaColor;
-	private Color alphaColorReset;
+	// private Color alphaColor;
+	// private Color alphaColorReset;
 	public float timeToFadeBlock;
 	// ___________________________________________________
 
@@ -30,10 +30,10 @@ public class QuestionBlock : MonoBehaviour {
 
 	void Start() 
 	{
-		alphaColor = GetComponent<MeshRenderer>().material.color;
-        alphaColor.a = 0;
-		alphaColorReset = GetComponent<MeshRenderer>().material.color;
-		alphaColorReset.a = 1;
+		// alphaColor = GetComponent<MeshRenderer>().material.color;
+        // alphaColor.a = 0;
+		// alphaColorReset = GetComponent<MeshRenderer>().material.color;
+		// alphaColorReset.a = 1;
 	}
 
 
@@ -47,7 +47,7 @@ public class QuestionBlock : MonoBehaviour {
 	{
 		FadeText();
 
-		FadeBlock();
+		// FadeBlock();
 
 		if(shaking == 1)
 		{
@@ -131,16 +131,16 @@ public class QuestionBlock : MonoBehaviour {
 	}
 
 
-	public void FadeBlock() 
-	{	
-		if(canFadeBlock)
-		{	
-			GetComponent<MeshRenderer>().material.color = Color.Lerp(GetComponent<MeshRenderer>().material.color, alphaColor, timeToFadeBlock * Time.deltaTime);
-		}
-		else
-		{
-			GetComponent<MeshRenderer>().material.color = Color.Lerp(GetComponent<MeshRenderer>().material.color, alphaColorReset, timeToFadeBlock * Time.deltaTime);
-		}
+// 	public void FadeBlock() 
+// 	{	
+// 		if(canFadeBlock)
+// 		{	
+// 			GetComponent<MeshRenderer>().material.color = Color.Lerp(GetComponent<MeshRenderer>().material.color, alphaColor, timeToFadeBlock * Time.deltaTime);
+// 		}
+// 		else
+// 		{
+// 			GetComponent<MeshRenderer>().material.color = Color.Lerp(GetComponent<MeshRenderer>().material.color, alphaColorReset, timeToFadeBlock * Time.deltaTime);
+// 		}
 		
-	}
+// 	}
 }

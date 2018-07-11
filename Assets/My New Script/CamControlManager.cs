@@ -33,8 +33,8 @@ public class CamControlManager : MonoBehaviour {
 	public GameObject edenLights;
 	public GameObject idolLights;
 	public GameObject gameAddictLightS;
-	public GameObject drugAddictLightS;
-	public GameObject hospitalLightS;
+	// public GameObject drugAddictLightS;
+	// public GameObject hospitalLightS;
 	public GameObject deadLights;
 	public GameObject christLights;
 
@@ -86,6 +86,7 @@ public class CamControlManager : MonoBehaviour {
 	AudioSource audioHospital;
 	AudioSource audioHospitalLight;
 	AudioSource audioDead;
+	AudioSource audioChrist;
 	
 	public Animator anim_EdenRotation;
 	public Animator anim_CrossFade;
@@ -131,6 +132,7 @@ public class CamControlManager : MonoBehaviour {
 		audioHospital = hosptialCam.GetComponent<AudioSource>();
 		audioHospitalLight = hospitalSpotlight.GetComponent<AudioSource>();
 		audioDead = deadCam.GetComponent<AudioSource>();
+		audioChrist = threeJobsCam.GetComponent<AudioSource>();
 
 		anim_EdenRotation = edenPivot.GetComponent<Animator>();
 		anim_EdenRotation.SetBool("Rotate", true);
@@ -153,8 +155,8 @@ public class CamControlManager : MonoBehaviour {
 		deadLights.SetActive(false);
 		christLights.SetActive(false);
 		gameAddictLightS.SetActive(false);
-		drugAddictLightS.SetActive(false);
-		hospitalLightS.SetActive(false);
+		// drugAddictLightS.SetActive(false);
+		// hospitalLightS.SetActive(false);
 
 		// 성경구절 셋팅 시작(모두 화면에서 가리기 위함)
 		bibleButton = biblePopup.GetComponent<QuestionBlock>();
@@ -198,8 +200,8 @@ public class CamControlManager : MonoBehaviour {
         }
 
         // 띄워진 성경문구 페이지 넘길때 지우기
-        bibleButton.displayInfo = false;
-        bibleButton.FadeText();
+        // bibleButton.displayInfo = false;
+        // bibleButton.FadeText();
 
         off = false;
         trig = trig + addNum;
@@ -285,8 +287,8 @@ public class CamControlManager : MonoBehaviour {
         }
 
 		// 띄워진 성경문구 페이지 넘길때 지우기
-		bibleButton.displayInfo = false;
-		bibleButton.FadeText();
+		// bibleButton.displayInfo = false;
+		// bibleButton.FadeText();
 
 		trig = trig + subNum;
 
@@ -361,24 +363,24 @@ public class CamControlManager : MonoBehaviour {
 	}
 
 
-	void FadeBlockOnOff(int onOff) 
-	{
-		if(onOff == 0) 
-		{
-			bibleButton.canFadeBlock = false;
-		}
-		else
-		{
-			bibleButton.canFadeBlock = true;
-		}
-	}
+	// void FadeBlockOnOff(int onOff) 
+	// {
+	// 	if(onOff == 0) 
+	// 	{
+	// 		bibleButton.canFadeBlock = false;
+	// 	}
+	// 	else
+	// 	{
+	// 		bibleButton.canFadeBlock = true;
+	// 	}
+	// }
 
 
 	// 해와 달 끄고 켜기
 	void TurnSunNMoonOff() 
 	{
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerSunNMoon) | (1 << cullingLayerEden); 
-		FadeBlockOnOff(1);
+		// FadeBlockOnOff(1);
 	}
 
 	void TurnSunNMoonOn() 
@@ -391,7 +393,7 @@ public class CamControlManager : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(2f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerSunNMoon) | (1 << cullingLayerEden);
-		FadeBlockOnOff(0);
+		// FadeBlockOnOff(0);
 	}
 
 	// 바다 끄고 켜기
@@ -411,8 +413,8 @@ public class CamControlManager : MonoBehaviour {
 	}
 	IEnumerator WaitForSeeOn() {
 		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Gen0315");
-		FadeBlockOnOff(0);
+		biblePopup.SendMessage("ChangeBible", "Gen11");
+		// FadeBlockOnOff(0);
 	}
 
 	// 에덴 끄고 켜기
@@ -421,7 +423,7 @@ public class CamControlManager : MonoBehaviour {
 		// StopCoroutine("WaitForEdenOn");
 		edenLights.SetActive(false);
 		audioEden.Stop();
-		bibleButton.canFadeBlock = true;
+		// bibleButton.canFadeBlock = true;
 		forbiddenFruitsTree.enabled = false;
 		originalProblem.displayInfo = false;
 		originalMan.displayInfo = false;
@@ -455,7 +457,7 @@ public class CamControlManager : MonoBehaviour {
 		audioIdol.Stop();
 		idolLights.SetActive(false);
 		StopCoroutine("WaitForIdolOn");
-		FadeBlockOnOff(1);
+		// FadeBlockOnOff(1);
 	}
 	void TurnIdolOn() {
 		audioIdol.Play();
@@ -471,7 +473,7 @@ public class CamControlManager : MonoBehaviour {
 		problemsOfMan.displayInfo = true;
 		yield return new WaitForSeconds(1f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol); 
-		FadeBlockOnOff(0);
+		// FadeBlockOnOff(0);
 	}
 
 	// 게임중독자 조명 및 사운드 끄고 켜기
@@ -482,7 +484,7 @@ public class CamControlManager : MonoBehaviour {
 		audioGameAddictLight.Stop();
 		gameAddictLight.enabled = false;
 		gameAddictLightS.SetActive(false);
-		FadeBlockOnOff(1);
+		// FadeBlockOnOff(1);
 	}
 	void TurnGameAddictOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerGameAddict); 
@@ -497,7 +499,7 @@ public class CamControlManager : MonoBehaviour {
 		gameAddictLight.enabled = true;
 		yield return new WaitForSeconds(0.5f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict);
-		FadeBlockOnOff(0);
+		// FadeBlockOnOff(0);
 		yield return new WaitForSeconds(0.5f);
 		audioGameAddict.Play();
 	}
@@ -509,9 +511,9 @@ public class CamControlManager : MonoBehaviour {
 		audioDrugAddict.Stop();
 		audioDrugAddictLight.Stop();
 		drugAddictLight.enabled = false;
-		drugAddictLightS.SetActive(false);
+		// drugAddictLightS.SetActive(false);
 		problemsOfMan.displayInfo = true;
-		FadeBlockOnOff(1);
+		// FadeBlockOnOff(1);
 	}
 	void TurnDrugAddictOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict) | (1 << cullingLayerDrugAddict);
@@ -521,12 +523,12 @@ public class CamControlManager : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 		biblePopup.SendMessage("ChangeBible", "Mat1128");
 		audioDrugAddictLight.Play();
-		drugAddictLightS.SetActive(true);
+		// drugAddictLightS.SetActive(true);
 		yield return new WaitForSeconds(0.2f);
 		audioDrugAddict.Play();
 		drugAddictLight.enabled = true;
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict);
-		FadeBlockOnOff(0);
+		// FadeBlockOnOff(0);
 	}
 
 	// 병원 조명 및 사운드 끄고 켜기
@@ -536,8 +538,8 @@ public class CamControlManager : MonoBehaviour {
 		audioHospital.Stop();
 		audioHospitalLight.Stop();
 		hospitalLight.enabled = false;
-		hospitalLightS.SetActive(false);
-		FadeBlockOnOff(1);
+		// hospitalLightS.SetActive(false);
+		// FadeBlockOnOff(1);
 	}
 	void TurnHospitalOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerHospital);
@@ -549,8 +551,8 @@ public class CamControlManager : MonoBehaviour {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerHospital);
 		audioHospitalLight.Play();
 		hospitalLight.enabled = true;
-		hospitalLightS.SetActive(true);
-		FadeBlockOnOff(0);
+		// hospitalLightS.SetActive(true);
+		// FadeBlockOnOff(0);
 		yield return new WaitForSeconds(0.5f);
 		audioHospital.Play();
 		biblePopup.SendMessage("ChangeBible", "Acts848");
@@ -562,7 +564,7 @@ public class CamControlManager : MonoBehaviour {
 		deadLights.SetActive(false);
 		StopCoroutine("WaitForDeadOn");
 		audioDead.Stop();
-		FadeBlockOnOff(1);
+		// FadeBlockOnOff(1);
 	}
 	void TurnDeadOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerHospital) | (1 << cullingLayerDead); 
@@ -575,25 +577,27 @@ public class CamControlManager : MonoBehaviour {
 		biblePopup.SendMessage("ChangeBible", "Exo205");
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDead);
 		problemsOfMan.displayInfo = true;
-		FadeBlockOnOff(0);
+		// FadeBlockOnOff(0);
 	}
 
 	// 3직분 끄고 켜기
 	void TurnChristOff() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDead) | (1 << cullingLayerThreeJobs); 
-		StopCoroutine("WaitForChristOn");
 		theWay.displayInfo = false;
+		StopCoroutine("WaitForChristOn");
 	}
 	void TurnChristOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDead) | (1 << cullingLayerThreeJobs); 
 		buttonTree.ChristSolved();
 		problemsOfMan.displayInfo = false;
+		audioChrist.Stop();
 		StartCoroutine("WaitForChristOn");
 	}
 	IEnumerator WaitForChristOn() {
 		yield return new WaitForSeconds(1f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerThreeJobs); 
 		theWay.displayInfo = true;
+		audioChrist.Play();
 
 	}
 

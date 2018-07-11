@@ -21,6 +21,13 @@ public class CMZoomCtrl : MonoBehaviour {
 
     static float t = 0f;
     private bool resetPOV;
+
+
+
+    // 마우스 끔 / 터치 켬
+    public bool mouseOff;
+    private GameObject[] cinemachineFreeLookZoom;
+
     
 
 
@@ -30,6 +37,19 @@ public class CMZoomCtrl : MonoBehaviour {
         firstPOV = freelook.m_Lens.FieldOfView;
 	}
 
+    void Start()
+    {
+        // 마우스 끔 / 터치로 사용
+        cinemachineFreeLookZoom = GameObject.FindGameObjectsWithTag("VirtualCam");
+        if(mouseOff) 
+        {
+            for(int i = 0; i < cinemachineFreeLookZoom.Length; i++)
+		    {
+                cinemachineFreeLookZoom[i].GetComponent<CinemachineFreeLookZoom>().enabled = false;
+            }
+        }
+    }
+
 
     public void POVreset() 
     {   
@@ -38,13 +58,12 @@ public class CMZoomCtrl : MonoBehaviour {
   
     
 
-
     void Update()
-    {
+    {   
         // If there are two touches on the device...
         if (Input.touchCount == 2)
         {
-            // Store both touches.
+        // Store both touches.
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
 
@@ -74,14 +93,14 @@ public class CMZoomCtrl : MonoBehaviour {
             presentPOV = freelook.m_Lens.FieldOfView;
 
             t += 0.3f * Time.deltaTime / 2f;
-
+            
             if (presentPOV >= firstPOV - 1) 
             {   
                 freelook.m_Lens.FieldOfView = firstPOV;
                 t = 0f;
                 resetPOV = false;
             }
-        }
+        }   
     }
 }
 
