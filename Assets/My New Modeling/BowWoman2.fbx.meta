@@ -1,19 +1,18 @@
 fileFormatVersion: 2
-guid: 4be2a01c2c1624db7b78004750793118
+guid: e8eb8dfedd05c43498bcd6e7ac094ef9
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: Plastic
-    2100002: TransparencyPart
-    2100004: needleBase
-    2100006: Needle
-    2100008: Fluid
-    2100010: Rubber
+    2100000: SKIN.009
+    2100002: plastic-yellow.005
+    2100004: ANIMAL-WHITE.005
+    2100006: LIGHT-RED.001
+    2100008: GUI.005
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Syringe
+    4300000: woman_01
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -53,7 +52,7 @@ ModelImporter:
     importCameras: 1
     importLights: 1
     swapUVChannels: 0
-    generateSecondaryUV: 1
+    generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
