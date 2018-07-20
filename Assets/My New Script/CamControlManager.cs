@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class CamControlManager : MonoBehaviour {
 	
+	// 성경구절 상태 변환
+	public GameObject bibleVersus;
+	public BibleButtonClickManager bibleClickManager;
+	private GameObject[] bibleTurnOff;
+	
+
+
 	// 제목 설정
 	public TextFade god;
 	public TextFade originalMan;
@@ -13,8 +20,6 @@ public class CamControlManager : MonoBehaviour {
 	public TextFade problemsOfMan;
 	public TextFade theWay;
 
-	
-	
 	
 	// 전체 버튼 on off
 	private GameObject[] allUIOnOff;
@@ -39,16 +44,19 @@ public class CamControlManager : MonoBehaviour {
 	public GameObject christLights;
 
 
-	public QuestionBlock bibleButton;
-	// 성경문구 띄우기 위해 메세지 보내기
-	public GameObject biblePopup;
-
-
 	// 에덴동산 회전시키기
 	public GameObject edenPivot;
+
 	// 선악과 버튼 on off
+	public GameObject mainTree;
+	public GameObject mainTreeOutline;
 	public CapsuleCollider forbiddenFruitsTree;
 	public ButtonTree buttonTree;
+	// 선악과 아웃라인 그리기
+	public Outline outLineForTree;
+	public bool outlineColorOn = false;
+	public Color outlineColor1;
+	public Color outlineColor2;
 
 	// 버추어 카메라 POV 리셋하기
 	private GameObject[] cmPOVreset;
@@ -75,7 +83,6 @@ public class CamControlManager : MonoBehaviour {
 	public CanvasGroup prayerPanelRaycast;
 
 
-	// public GameObject cmIdol;
 	AudioSource audioSee;
 	AudioSource audioEden;
 	AudioSource audioIdol;
@@ -98,6 +105,7 @@ public class CamControlManager : MonoBehaviour {
 	private bool on = true;
 
 
+	// 메인카메라 레이어(컬링마스크) 설정
 	int cullingLayerDefault = 0;
 	int cullingLayerEden = 8;
 	int cullingLayerSunNMoon = 9;
@@ -113,6 +121,11 @@ public class CamControlManager : MonoBehaviour {
 
 	void Start () 
 	{
+		// 성경구절 불러오기
+		bibleClickManager = bibleVersus.GetComponent<BibleButtonClickManager>();
+		bibleClickManager.BibleState(0);
+		bibleTurnOff = GameObject.FindGameObjectsWithTag("BibleTurnOff");
+
 		// 버튼들 모두 불러오기
 		allUIOnOff = GameObject.FindGameObjectsWithTag("ButtonOnOff");
 
@@ -155,18 +168,8 @@ public class CamControlManager : MonoBehaviour {
 		deadLights.SetActive(false);
 		christLights.SetActive(false);
 		gameAddictLightS.SetActive(false);
-		// drugAddictLightS.SetActive(false);
-		// hospitalLightS.SetActive(false);
 
-		// 성경구절 셋팅 시작(모두 화면에서 가리기 위함)
-		bibleButton = biblePopup.GetComponent<QuestionBlock>();
-		biblePopup.SendMessage("ChangeBible", "Gen0315");
-		biblePopup.SendMessage("ChangeBible", "Eph22");
-		biblePopup.SendMessage("ChangeBible", "John844");
-		biblePopup.SendMessage("ChangeBible", "Mat1128");
-		biblePopup.SendMessage("ChangeBible", "Acts848");
-		biblePopup.SendMessage("ChangeBible", "Exo205");
-		biblePopup.SendMessage("ChangeBible", "Gen11");
+
 
 		// 제목 셋팅 시작
 		god = GameObject.Find("God").GetComponent<TextFade>();
@@ -179,29 +182,41 @@ public class CamControlManager : MonoBehaviour {
 		theWay = GameObject.Find("TheWay").GetComponent<TextFade>();
 		theWay.displayInfo = false;
 
+
 		// 선악과 버튼 셋팅
-		buttonTree = GameObject.Find("tree-baobab").GetComponent<ButtonTree>();
+		buttonTree = mainTree.GetComponent<ButtonTree>();
+		outLineForTree = mainTreeOutline.GetComponent<Outline>();
 
 		// 선악과 콜라이더 on off
-		forbiddenFruitsTree = GameObject.Find("tree-baobab").GetComponent<CapsuleCollider>();
+		forbiddenFruitsTree = mainTree.GetComponent<CapsuleCollider>();
 
 		// 페이지 시작
 		TurnSunNMoonOn();
+	}
+
+	void Update() 
+	{
+		OutlineColorChange();	
 	}
 
 
 
 	public void RightClicked ()
     {
+		// 성경구절 페이지 넘길때 끄기
+		for (int i = 0; i < bibleTurnOff.Length; i++)
+        {
+			if(bibleTurnOff[i].GetComponent<BibleVersusPopup>().displayInfo == true)
+			{
+				bibleTurnOff[i].GetComponent<BibleVersusPopup>().displayInfo = false;
+			}
+        }
+
         // 버추어 카메라 POV 리셋
         for (int i = 0; i < cmPOVreset.Length; i++)
         {
             cmPOVreset[i].GetComponent<CMZoomCtrl>().POVreset();
         }
-
-        // 띄워진 성경문구 페이지 넘길때 지우기
-        // bibleButton.displayInfo = false;
-        // bibleButton.FadeText();
 
         off = false;
         trig = trig + addNum;
@@ -222,14 +237,12 @@ public class CamControlManager : MonoBehaviour {
 
             case 3:
                 edenCam.SetActive(off);
-                // TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
                 TurnEdenOff();
                 TurnIdolOn();
                 break;
 
             case 4:
                 idolCam.SetActive(off);
-                // TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
                 TurnIdolOff();
                 TurnGameAddictOn();
                 break;
@@ -257,15 +270,15 @@ public class CamControlManager : MonoBehaviour {
                 TurnDeadOff();
                 TurnChristOn();
                 christLights.SetActive(true);
-                // 영접기도문을 위해서 나머지 UI 모두 끄기
-                for (int i = 0; i < allUIOnOff.Length; i++)
-                {
-                    allUIOnOff[i].SetActive(false);
-                }
                 break;
 
             case 9:
                 threeJobsCam.SetActive(off);
+				// 영접기도문을 위해서 나머지 UI 모두 끄기
+                for (int i = 0; i < allUIOnOff.Length; i++)
+                {
+                    allUIOnOff[i].SetActive(false);
+                }
                 TurnHeartCrossOn();
                 DollyCamPlay();
                 break;
@@ -280,15 +293,21 @@ public class CamControlManager : MonoBehaviour {
 
     public void LeftClicked () 
 	{
+		// 성경구절 페이지 넘길때 끄기
+		for (int i = 0; i < bibleTurnOff.Length; i++)
+        {
+			if(bibleTurnOff[i].GetComponent<BibleVersusPopup>().displayInfo == true)
+			{
+				bibleTurnOff[i].GetComponent<BibleVersusPopup>().displayInfo = false;
+			}
+        }
 		// 버추어 카메라 POV 리셋
 		for(int i = 0; i < cmPOVreset.Length; i++)
 		{
             cmPOVreset[i].GetComponent<CMZoomCtrl>().POVreset();
         }
 
-		// 띄워진 성경문구 페이지 넘길때 지우기
-		// bibleButton.displayInfo = false;
-		// bibleButton.FadeText();
+
 
 		trig = trig + subNum;
 
@@ -307,14 +326,12 @@ public class CamControlManager : MonoBehaviour {
 
 			case 2:
 				edenCam.SetActive(on);
-				// TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
 				TurnIdolOff();
 				TurnEdenOn();
 				break;
 
 			case 3:
 				idolCam.SetActive(on);
-				// TODO: 수정 및 정리 요망(다른 오디오 파일도 적용해야하므로)
 				TurnGameAddictOff();
 				TurnIdolOn();
 				break;
@@ -342,11 +359,6 @@ public class CamControlManager : MonoBehaviour {
 				TurnDeadOn();
 				TurnChristOff();
 				christLights.SetActive(false);
-				// 영접기도문을 위해서 나머지 UI 모두 끄기
-				for(int i = 0; i < allUIOnOff.Length; i++)
-				{
-             		allUIOnOff[i].SetActive(true);
-         		}
 				break;
 
 			case 8:
@@ -354,6 +366,11 @@ public class CamControlManager : MonoBehaviour {
 				TurnChristOn();
 				TurnHeartCrossOff();
 				DollyCamPlayOff();
+				// 영접기도문을 위해서 나머지 UI 모두 끄기
+				for(int i = 0; i < allUIOnOff.Length; i++)
+				{
+             		allUIOnOff[i].SetActive(true);
+         		}
 				break;
 
 			default:
@@ -362,18 +379,6 @@ public class CamControlManager : MonoBehaviour {
 		}
 	}
 
-
-	// void FadeBlockOnOff(int onOff) 
-	// {
-	// 	if(onOff == 0) 
-	// 	{
-	// 		bibleButton.canFadeBlock = false;
-	// 	}
-	// 	else
-	// 	{
-	// 		bibleButton.canFadeBlock = true;
-	// 	}
-	// }
 
 
 	// 해와 달 끄고 켜기
@@ -386,6 +391,7 @@ public class CamControlManager : MonoBehaviour {
 	void TurnSunNMoonOn() 
 	{
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerSunNMoon) | (1 << cullingLayerEden);
+		bibleClickManager.BibleState(0);
 		StartCoroutine("WaitForSunNMoonOn");
 		god.displayInfo = true;
 	}
@@ -409,11 +415,11 @@ public class CamControlManager : MonoBehaviour {
 		originalMan.displayInfo = false;
 		originalProblem.displayInfo = false;
 		god.displayInfo = true;
+		bibleClickManager.BibleState(1);
 		StartCoroutine("WaitForSeeOn");
 	}
 	IEnumerator WaitForSeeOn() {
 		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Gen11");
 		// FadeBlockOnOff(0);
 	}
 
@@ -438,16 +444,29 @@ public class CamControlManager : MonoBehaviour {
 		{
 			originalMan.displayInfo = true;
 			originalProblem.displayInfo = false;
+			bibleClickManager.BibleState(2);
+			StartCoroutine("WaitForEdenOn");
 		}
 		else
 		{
 			originalProblem.displayInfo = true;
+			bibleClickManager.BibleState(3);
+			outlineColorOn = false;
 		}
-		StartCoroutine("WaitForEdenOn");
 	}
 	IEnumerator WaitForEdenOn() {
 		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Gen0315");
+		outLineForTree.enabled = true;
+		outlineColorOn = true; 
+	}
+
+
+	void OutlineColorChange()
+	{
+		if (outlineColorOn)
+		{
+			outLineForTree.outlineColor = Color.Lerp(outlineColor1, outlineColor2, Mathf.PingPong(Time.time, 1));
+		}
 	}
 
 
@@ -463,11 +482,11 @@ public class CamControlManager : MonoBehaviour {
 		audioIdol.Play();
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerEden) | (1 << cullingLayerIdol) | (1 << cullingLayerSunNMoon); 
 		idolLights.SetActive(true);
+		bibleClickManager.BibleState(4);
 		StartCoroutine("WaitForIdolOn");
 	}
 	IEnumerator WaitForIdolOn() {
 		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Eph22");
 		originalProblem.displayInfo = false;
 		originalMan.displayInfo = false;
 		problemsOfMan.displayInfo = true;
@@ -489,11 +508,11 @@ public class CamControlManager : MonoBehaviour {
 	void TurnGameAddictOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerGameAddict); 
 		problemsOfMan.displayInfo = true;
+		bibleClickManager.BibleState(5);
 		StartCoroutine("WaitForGameAddictOn");
 	}
 	IEnumerator WaitForGameAddictOn() {
 		yield return new WaitForSeconds(2f);
-		biblePopup.SendMessage("ChangeBible", "John844");
 		gameAddictLightS.SetActive(true);
 		audioGameAddictLight.Play();
 		gameAddictLight.enabled = true;
@@ -517,11 +536,11 @@ public class CamControlManager : MonoBehaviour {
 	}
 	void TurnDrugAddictOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict) | (1 << cullingLayerDrugAddict);
+		bibleClickManager.BibleState(6);
 		StartCoroutine("WaitForDrugAddictOn");
 	}
 	IEnumerator WaitForDrugAddictOn() {
 		yield return new WaitForSeconds(1f);
-		biblePopup.SendMessage("ChangeBible", "Mat1128");
 		audioDrugAddictLight.Play();
 		// drugAddictLightS.SetActive(true);
 		yield return new WaitForSeconds(0.2f);
@@ -544,6 +563,7 @@ public class CamControlManager : MonoBehaviour {
 	void TurnHospitalOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerHospital);
 		problemsOfMan.displayInfo = true;
+		bibleClickManager.BibleState(7);
 		StartCoroutine("WaitForHospitalOn");
 	}
 	IEnumerator WaitForHospitalOn() {
@@ -553,9 +573,9 @@ public class CamControlManager : MonoBehaviour {
 		hospitalLight.enabled = true;
 		// hospitalLightS.SetActive(true);
 		// FadeBlockOnOff(0);
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.6f);
 		audioHospital.Play();
-		biblePopup.SendMessage("ChangeBible", "Acts848");
+		// biblePopup.SendMessage("ChangeBible", "Acts848");
 	}
 
 	// 에덴 끄고 켜기
@@ -570,11 +590,12 @@ public class CamControlManager : MonoBehaviour {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerHospital) | (1 << cullingLayerDead); 
 		audioDead.Play();
 		deadLights.SetActive(true);
+		bibleClickManager.BibleState(8);
 		StartCoroutine("WaitForDeadOn");
 	}
 	IEnumerator WaitForDeadOn() {
 		yield return new WaitForSeconds(2f);
-		biblePopup.SendMessage("ChangeBible", "Exo205");
+		// biblePopup.SendMessage("ChangeBible", "Exo205");
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDead);
 		problemsOfMan.displayInfo = true;
 		// FadeBlockOnOff(0);
@@ -591,6 +612,7 @@ public class CamControlManager : MonoBehaviour {
 		buttonTree.ChristSolved();
 		problemsOfMan.displayInfo = false;
 		audioChrist.Stop();
+		bibleClickManager.BibleState(9);
 		StartCoroutine("WaitForChristOn");
 	}
 	IEnumerator WaitForChristOn() {

@@ -14,6 +14,7 @@ public class ButtonTree : MonoBehaviour {
 	public ChangeBackColor mainCamBackScript;
 	public GameObject mainCam;
 
+
 	// Eden 선악과 스팟라이트 켜기
 	public GameObject forbiddenFruit;
 	public Light edenSpotlight;
@@ -26,12 +27,22 @@ public class ButtonTree : MonoBehaviour {
 	// Eden 무드라이트 조절하기
 	public EdenMoodLightController edenMoodLightControl;
 
+	// 선악과 아웃라인 정지시키기
+	public GameObject mainTreeOutline;
+	public Outline outLineForTree;
+
 
 	// 제목 달기
 	public TextFade god;
 	public TextFade originalMan;
 	public TextFade originalProblem;
 	public TextFade problemsOfMan;
+
+	// 성경구절 나무버튼과 함께 끄기
+	public BibleVersusPopup gen0128;
+	public BibleVersusPopup gen0315;
+	public BibleVersusPopup eph22;
+	public BibleButtonClickManager bibleClickManager;
 
 
     void Start() 
@@ -50,13 +61,21 @@ public class ButtonTree : MonoBehaviour {
 		audioEden = GameObject.Find("EdenSoundPlayer").GetComponent<AudioSource>();
 		audioLivingGodScary = GetComponent<AudioSource>();
 		edenMoodLightControl = GameObject.Find("EdenMoodLight").GetComponent<EdenMoodLightController>();
+		// 선악과 아웃라인 끄기
+		outLineForTree = mainTreeOutline.GetComponent<Outline>();
 
 		// 제목달기
 		god = GameObject.Find("God").GetComponent<TextFade>();
 		originalMan = GameObject.Find("OriginalMan").GetComponent<TextFade>();
 		originalProblem = GameObject.Find("OriginalProblem").GetComponent<TextFade>();
 		problemsOfMan = GameObject.Find("ProblemsOfMan").GetComponent<TextFade>();
-    }
+    
+		// 성경구절 나무버튼과 함께 끄기
+		gen0128 = GameObject.Find("Gen0128").GetComponent<BibleVersusPopup>();
+		gen0315 = GameObject.Find("Gen0315").GetComponent<BibleVersusPopup>();
+		eph22 = GameObject.Find("Eph22").GetComponent<BibleVersusPopup>();
+		bibleClickManager = GameObject.Find("BibleVersus").GetComponent<BibleButtonClickManager>();
+	}
 
 
 	void Update() 
@@ -70,7 +89,9 @@ public class ButtonTree : MonoBehaviour {
 			{
 				if(hit.transform.name == "tree-baobab")
                 {
+					outLineForTree.enabled = false;
                     originalMan.displayInfo = false;
+					gen0128.displayInfo = false;
 					LeaveGod();
                 }
             }
@@ -78,7 +99,8 @@ public class ButtonTree : MonoBehaviour {
 	}
 
     private void LeaveGod()
-    {
+    {	
+		bibleClickManager.BibleState(3);
 		whiteDissolveSound.Play();
         animWhiteDissolve.SetBool("ClickTree", true);
         audioEden.Stop();
