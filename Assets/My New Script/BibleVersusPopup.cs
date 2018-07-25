@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BibleVersusPopup : MonoBehaviour {
 
 	// 텍스트 띄우기 위한 값들
-	public Text myText;
+	public TextMeshProUGUI myText;
 
 	public string bibleName;
 	public float timeToFadeText;
@@ -21,7 +22,7 @@ public class BibleVersusPopup : MonoBehaviour {
 		// biblePopUp = audios[0];
 		// biblePopDown = audios[1];
 
-		myText = GameObject.Find(bibleName).GetComponent<Text>();
+		myText = GameObject.Find(bibleName).GetComponent<TextMeshProUGUI>();
 		myText.color = Color.clear;
 
 	}
@@ -84,7 +85,7 @@ public class BibleVersusPopup : MonoBehaviour {
 		if(displayInfo) 
 		{
 			myText.color = Color.Lerp(myText.color, Color.white, timeToFadeText * Time.deltaTime);
-			Invoke("TextBye", 4);
+			Invoke("TextBye", 6);
 		}
 		else
 		{

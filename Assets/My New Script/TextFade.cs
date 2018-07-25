@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TextFade : MonoBehaviour {
 
 	// 텍스트 띄우기 위한 값들
-	public Text myText;
+	public TextMeshProUGUI myText;
 	public string titleName;
 	public float timeToFadeText;
 	public bool displayInfo = false;
@@ -14,7 +15,7 @@ public class TextFade : MonoBehaviour {
 
 	void Start() 
 	{
-		myText = GameObject.Find(titleName).GetComponent<Text>();
+		myText = GameObject.Find(titleName).GetComponent<TextMeshProUGUI>();
 	}
 	
 

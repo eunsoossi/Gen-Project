@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BibleButtonClickManager : MonoBehaviour {
 
@@ -74,7 +75,7 @@ public class BibleButtonClickManager : MonoBehaviour {
 				}
 				else
 				{
-					gen0105.displayInfo = false;
+					gen0120.displayInfo = false;
 					popDown.Play();
 
 				}
