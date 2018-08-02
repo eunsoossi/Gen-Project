@@ -83,7 +83,7 @@ public class CMZoomCtrl : MonoBehaviour {
             freelook.m_Lens.FieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
 
             // Clamp the field of view to make sure it's between 0 and 180.
-            freelook.m_Lens.FieldOfView = Mathf.Clamp(freelook.m_Lens.FieldOfView, firstPOV - 30f, firstPOV);
+            freelook.m_Lens.FieldOfView = Mathf.Clamp(freelook.m_Lens.FieldOfView, firstPOV - 40f, firstPOV);
             presentPOV = freelook.m_Lens.FieldOfView;
         }
 
