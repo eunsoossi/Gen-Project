@@ -52,11 +52,21 @@ public class CamControlManager : MonoBehaviour {
 	public GameObject mainTreeOutline;
 	public CapsuleCollider forbiddenFruitsTree;
 	public ButtonTree buttonTree;
+
 	// 선악과 아웃라인 그리기
 	public Outline outLineForTree;
-	public bool outlineColorOn = false;
-	public Color outlineColor1;
-	public Color outlineColor2;
+	public bool outlineColorOnTree = false;
+	public Color treeOutlineColor1;
+	public Color treeOutlineColor2;
+
+	// 십자가 아웃라인 그리기
+	public GameObject CrossOutline;
+	public Outline outLineForCross;
+	public bool outlineColorOnCross = false;
+	public Color crossOutlineColor1;
+	public Color crossOutlineColor2;
+	
+
 
 	// 버추어 카메라 POV 리셋하기
 	private GameObject[] cmPOVreset;
@@ -81,6 +91,8 @@ public class CamControlManager : MonoBehaviour {
 	// 십자가 페이드 인 앤 아웃
 	public GameObject cross;
 	public CanvasGroup prayerPanelRaycast;
+	public GameObject cross2;
+
 
 
 	AudioSource audioSee;
@@ -97,12 +109,15 @@ public class CamControlManager : MonoBehaviour {
 	
 	public Animator anim_EdenRotation;
 	public Animator anim_CrossFade;
+	public Animator anim_CrossFade2;
 
+	// 카메라 페이지 넘기기
 	private int trig = 0;
 	private int addNum = 1;
 	private int subNum = -1;
 	private bool off = false;
 	private bool on = true;
+	public bool treeButtonActive = false;
 
 
 	// 메인카메라 레이어(컬링마스크) 설정
@@ -150,10 +165,13 @@ public class CamControlManager : MonoBehaviour {
 		anim_EdenRotation = edenPivot.GetComponent<Animator>();
 		anim_EdenRotation.SetBool("Rotate", true);
 		anim_CrossFade = cross.GetComponent<Animator>();
+		anim_CrossFade2 = cross2.GetComponent<Animator>();
 		anim_CrossFade.SetBool("Fade", false);
+		anim_CrossFade2.SetBool("Fade", false);
 
 		//영접기도문 켜고끄기
 		prayerPanelRaycast = GameObject.Find("PrayerPanel").GetComponent<CanvasGroup>();
+
 
 		
 		gameAddictLight = gameAddictLight.GetComponent<Light>();
@@ -190,6 +208,10 @@ public class CamControlManager : MonoBehaviour {
 		// 선악과 콜라이더 on off
 		forbiddenFruitsTree = mainTree.GetComponent<CapsuleCollider>();
 
+		// 십자가 아웃라인 셋팅
+		outLineForCross = CrossOutline.GetComponent<Outline>();
+
+
 		// 페이지 시작
 		TurnSunNMoonOn();
 	}
@@ -219,7 +241,20 @@ public class CamControlManager : MonoBehaviour {
         }
 
         off = false;
-        trig = trig + addNum;
+
+		Debug.Log("카메라 몇번?" + trig);
+		if (trig != 2)
+		{
+			trig = trig + addNum;
+		}
+		else if (trig == 2 && edenSpotlight.enabled == true)
+		{
+			trig = trig + addNum;
+		}
+		else
+		{
+			return;
+		}
 
         switch (trig)
         {
@@ -308,8 +343,9 @@ public class CamControlManager : MonoBehaviour {
         }
 
 
-
+		Debug.Log("카메라 몇번?" + trig);
 		trig = trig + subNum;
+
 
 		switch (trig) {
 			case 0:
@@ -436,12 +472,12 @@ public class CamControlManager : MonoBehaviour {
 	}
 	void TurnEdenOn() {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerSunNMoon) | (1 << cullingLayerEden); 
-		audioEden.Play();
 		edenLights.SetActive(true);
 		forbiddenFruitsTree.enabled = true;
 		problemsOfMan.displayInfo = false;
 		if(edenSpotlight.enabled == false)
 		{
+			audioEden.Play();
 			originalMan.displayInfo = true;
 			originalProblem.displayInfo = false;
 			bibleClickManager.BibleState(2);
@@ -451,21 +487,26 @@ public class CamControlManager : MonoBehaviour {
 		{
 			originalProblem.displayInfo = true;
 			bibleClickManager.BibleState(3);
-			outlineColorOn = false;
+			outlineColorOnTree = false;
 		}
 	}
 	IEnumerator WaitForEdenOn() {
 		yield return new WaitForSeconds(1f);
 		outLineForTree.enabled = true;
-		outlineColorOn = true; 
+		outlineColorOnTree = true; 
 	}
 
 
 	void OutlineColorChange()
 	{
-		if (outlineColorOn)
+		if (outlineColorOnTree)
 		{
-			outLineForTree.outlineColor = Color.Lerp(outlineColor1, outlineColor2, Mathf.PingPong(Time.time, 1));
+			outLineForTree.outlineColor = Color.Lerp(treeOutlineColor1, treeOutlineColor2, Mathf.PingPong(Time.time, 1));
+		}
+
+		if (outlineColorOnCross)
+		{
+			outLineForCross.outlineColor = Color.Lerp(crossOutlineColor1, crossOutlineColor2, Mathf.PingPong(Time.time, 2));
 		}
 	}
 
@@ -632,14 +673,22 @@ public class CamControlManager : MonoBehaviour {
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerThreeJobs) | (1 << cullingLayerHeartCross); 
 		theWay.displayInfo = false;
 		prayerPanelRaycast.blocksRaycasts = true;
-
+		StartCoroutine("WaitForCrossOn");
 	}
+	IEnumerator WaitForCrossOn() {
+		yield return new WaitForSeconds(5f);
+		outLineForCross.enabled = true;
+		outlineColorOnCross = true;
+	}
+
+	
 
 
 	// 달리캠 플레이 컨트롤용 함수
 	void DollyCamPlayOff() {
 		playerabkeDirector.Stop();
 		anim_CrossFade.SetBool("Fade", false);
+		anim_CrossFade2.SetBool("Fade", false);
 	}
 	void DollyCamPlay() {
 		playerabkeDirector.Play();
@@ -648,5 +697,6 @@ public class CamControlManager : MonoBehaviour {
 	IEnumerator WaitForDollyCamOn() {
 		yield return new WaitForSeconds(4f);
 		anim_CrossFade.SetBool("Fade", true);
+		anim_CrossFade2.SetBool("Fade", true);
 	}
 }
