@@ -242,7 +242,7 @@ public class CamControlManager : MonoBehaviour {
 
         off = false;
 
-		Debug.Log("카메라 몇번?" + trig);
+		// Debug.Log("카메라 몇번?" + trig);
 		if (trig != 2)
 		{
 			trig = trig + addNum;
@@ -321,7 +321,7 @@ public class CamControlManager : MonoBehaviour {
             case 10:
                 if (trig >= 10)
                     trig = 9;
-					Debug.Log("캠넘버?  " + trig);
+					// Debug.Log("캠넘버?  " + trig);
                 break;
         }
     }
@@ -676,7 +676,7 @@ public class CamControlManager : MonoBehaviour {
 		StartCoroutine("WaitForCrossOn");
 	}
 	IEnumerator WaitForCrossOn() {
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(6f);
 		outLineForCross.enabled = true;
 		outlineColorOnCross = true;
 	}
