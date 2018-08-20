@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using TMPro;
 
 public class CamControlManager : MonoBehaviour {
-	
+
 	// 성경구절 상태 변환
 	public GameObject bibleVersus;
 	public BibleButtonClickManager bibleClickManager;
@@ -47,6 +48,9 @@ public class CamControlManager : MonoBehaviour {
 	// 에덴동산 회전시키기
 	public GameObject edenPivot;
 
+	// 창2:17 구절 띄우기
+	public GameObject FloatingTextPrefab;
+
 	// 선악과 버튼 on off
 	public GameObject mainTree;
 	public GameObject mainTreeOutline;
@@ -59,14 +63,21 @@ public class CamControlManager : MonoBehaviour {
 	public Color treeOutlineColor1;
 	public Color treeOutlineColor2;
 
+	// 선악과 성경구절 깜짝이기
+	public GameObject treeText;
+	public TextMeshPro treeGen0217;
+
 	// 십자가 아웃라인 그리기
 	public GameObject CrossOutline;
 	public Outline outLineForCross;
 	public bool outlineColorOnCross = false;
 	public Color crossOutlineColor1;
 	public Color crossOutlineColor2;
-	
 
+
+	// 우상신전 연기피우기
+	public ParticleSystem smoke;
+	public ParticleSystem whiteSmoke;
 
 	// 버추어 카메라 POV 리셋하기
 	private GameObject[] cmPOVreset;
@@ -205,12 +216,19 @@ public class CamControlManager : MonoBehaviour {
 		buttonTree = mainTree.GetComponent<ButtonTree>();
 		outLineForTree = mainTreeOutline.GetComponent<Outline>();
 
+		// 선악과 텍스트 셋팅
+		treeGen0217 = treeText.GetComponent<TextMeshPro>();
+
 		// 선악과 콜라이더 on off
 		forbiddenFruitsTree = mainTree.GetComponent<CapsuleCollider>();
 
 		// 십자가 아웃라인 셋팅
 		outLineForCross = CrossOutline.GetComponent<Outline>();
 
+		// 우상신전 연기 피우기 셋팅
+		smoke = whiteSmoke.GetComponent<ParticleSystem>();
+		smoke.Stop(true);
+		
 
 		// 페이지 시작
 		TurnSunNMoonOn();
@@ -273,24 +291,24 @@ public class CamControlManager : MonoBehaviour {
             case 3:
                 edenCam.SetActive(off);
                 TurnEdenOff();
-                TurnIdolOn();
-                break;
-
-            case 4:
-                idolCam.SetActive(off);
-                TurnIdolOff();
-                TurnGameAddictOn();
-                break;
-
-            case 5:
-                gameAddictCam.SetActive(off);
-                TurnGameAddictOff();
                 TurnDrugAddictOn();
                 break;
 
-            case 6:
+            case 4:
                 drugAddictCam.SetActive(off);
-                TurnDrugAddictOff();
+				TurnDrugAddictOff();
+				TurnIdolOn();
+                break;
+
+            case 5:
+				idolCam.SetActive(off);
+				TurnIdolOff();
+				TurnGameAddictOn();
+                break;
+
+            case 6:
+				gameAddictCam.SetActive(off);
+                TurnGameAddictOff();
                 TurnHospitalOn();
                 break;
 
@@ -343,7 +361,7 @@ public class CamControlManager : MonoBehaviour {
         }
 
 
-		Debug.Log("카메라 몇번?" + trig);
+		// Debug.Log("카메라 몇번?" + trig);
 		trig = trig + subNum;
 
 
@@ -362,25 +380,27 @@ public class CamControlManager : MonoBehaviour {
 
 			case 2:
 				edenCam.SetActive(on);
-				TurnIdolOff();
+				TurnDrugAddictOff();
 				TurnEdenOn();
 				break;
 
 			case 3:
-				idolCam.SetActive(on);
-				TurnGameAddictOff();
-				TurnIdolOn();
+				drugAddictCam.SetActive(on);
+				TurnDrugAddictOn();
+				TurnIdolOff();
 				break;
 
 			case 4:
-				gameAddictCam.SetActive(on);
-				TurnGameAddictOn();
-				TurnDrugAddictOff();
+				idolCam.SetActive(on);
+				
+				TurnIdolOn();
+				TurnGameAddictOff();
 				break;
 
 			case 5:
-				drugAddictCam.SetActive(on);
-				TurnDrugAddictOn();
+				gameAddictCam.SetActive(on);
+				
+				TurnGameAddictOn();
 				TurnHospitalOff();
 				break;
 
@@ -488,20 +508,24 @@ public class CamControlManager : MonoBehaviour {
 			originalProblem.displayInfo = true;
 			bibleClickManager.BibleState(3);
 			outlineColorOnTree = false;
+			// treeGen0217.enabled = false;
 		}
 	}
 	IEnumerator WaitForEdenOn() {
 		yield return new WaitForSeconds(1f);
 		outLineForTree.enabled = true;
+		treeGen0217.enabled = true;
 		outlineColorOnTree = true; 
 	}
+
 
 
 	void OutlineColorChange()
 	{
 		if (outlineColorOnTree)
 		{
-			outLineForTree.outlineColor = Color.Lerp(treeOutlineColor1, treeOutlineColor2, Mathf.PingPong(Time.time, 1));
+			outLineForTree.outlineColor = Color.Lerp(treeOutlineColor2, treeOutlineColor1, Mathf.PingPong(Time.time, 3));
+			treeGen0217.color = outLineForTree.outlineColor;
 		}
 
 		if (outlineColorOnCross)
@@ -511,27 +535,58 @@ public class CamControlManager : MonoBehaviour {
 	}
 
 
+// 약물중독자(정신병자) 조명 및 사운드 끄고 켜기
+	void TurnDrugAddictOff() {
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerEden)| (1 << cullingLayerSunNMoon);
+		StopCoroutine("WaitForDrugAddictOn");
+		audioDrugAddict.Stop();
+		audioDrugAddictLight.Stop();
+		drugAddictLight.enabled = false;
+		// drugAddictLightS.SetActive(false);
+		problemsOfMan.displayInfo = true;
+		// FadeBlockOnOff(1);
+	}
+	void TurnDrugAddictOn() {
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerEden) | (1 << cullingLayerDrugAddict)| (1 << cullingLayerSunNMoon);
+		bibleClickManager.BibleState(6);
+		audioDrugAddict.Play();
+		StartCoroutine("WaitForDrugAddictOn");
+	}
+	IEnumerator WaitForDrugAddictOn() {
+		yield return new WaitForSeconds(1f);
+		originalProblem.displayInfo = false;
+		originalMan.displayInfo = false;
+		problemsOfMan.displayInfo = true;
+		// drugAddictLightS.SetActive(true);
+		yield return new WaitForSeconds(1.4f);
+		audioDrugAddictLight.Play();
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict);
+		yield return new WaitForSeconds(0.3f);
+		drugAddictLight.enabled = true;
+		// FadeBlockOnOff(0);
+	}
+
+
 	// 우상 끄고 켜기
 	void TurnIdolOff() {
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerEden);
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerDrugAddict);
 		audioIdol.Stop();
-		idolLights.SetActive(false);
+		idolLights.SetActive(false);		
+		smoke.Stop(true);
 		StopCoroutine("WaitForIdolOn");
 		// FadeBlockOnOff(1);
 	}
 	void TurnIdolOn() {
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerDrugAddict); 
 		audioIdol.Play();
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerEden) | (1 << cullingLayerIdol) | (1 << cullingLayerSunNMoon); 
 		idolLights.SetActive(true);
 		bibleClickManager.BibleState(4);
 		StartCoroutine("WaitForIdolOn");
 	}
 	IEnumerator WaitForIdolOn() {
-		yield return new WaitForSeconds(1f);
-		originalProblem.displayInfo = false;
-		originalMan.displayInfo = false;
-		problemsOfMan.displayInfo = true;
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.5f);
+		smoke.Play(true);
+		yield return new WaitForSeconds(1.5f);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol); 
 		// FadeBlockOnOff(0);
 	}
@@ -564,36 +619,11 @@ public class CamControlManager : MonoBehaviour {
 		audioGameAddict.Play();
 	}
 
-	// 약물중독자(정신병자) 조명 및 사운드 끄고 켜기
-	void TurnDrugAddictOff() {
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerGameAddict);
-		StopCoroutine("WaitForDrugAddictOn");
-		audioDrugAddict.Stop();
-		audioDrugAddictLight.Stop();
-		drugAddictLight.enabled = false;
-		// drugAddictLightS.SetActive(false);
-		problemsOfMan.displayInfo = true;
-		// FadeBlockOnOff(1);
-	}
-	void TurnDrugAddictOn() {
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict) | (1 << cullingLayerDrugAddict);
-		bibleClickManager.BibleState(6);
-		StartCoroutine("WaitForDrugAddictOn");
-	}
-	IEnumerator WaitForDrugAddictOn() {
-		yield return new WaitForSeconds(1f);
-		audioDrugAddictLight.Play();
-		// drugAddictLightS.SetActive(true);
-		yield return new WaitForSeconds(0.2f);
-		audioDrugAddict.Play();
-		drugAddictLight.enabled = true;
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict);
-		// FadeBlockOnOff(0);
-	}
+	
 
 	// 병원 조명 및 사운드 끄고 켜기
 	void TurnHospitalOff() {
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerHospital);
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict) | (1 << cullingLayerHospital);
 		StopCoroutine("WaitForHospitalOn");
 		audioHospital.Stop();
 		audioHospitalLight.Stop();
@@ -602,7 +632,7 @@ public class CamControlManager : MonoBehaviour {
 		// FadeBlockOnOff(1);
 	}
 	void TurnHospitalOn() {
-		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerDrugAddict) | (1 << cullingLayerHospital);
+		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerGameAddict) | (1 << cullingLayerHospital);
 		problemsOfMan.displayInfo = true;
 		bibleClickManager.BibleState(7);
 		StartCoroutine("WaitForHospitalOn");

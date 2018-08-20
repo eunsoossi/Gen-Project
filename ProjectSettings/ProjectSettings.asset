@@ -119,7 +119,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.0
+  bundleVersion: 1.1
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -158,8 +158,8 @@ PlayerSettings:
     iOS: com.DarakLab.Gen315
     tvOS: com.Company.ProductName
   buildNumber:
-    iOS: 0
-  AndroidBundleVersionCode: 1
+    iOS: 2
+  AndroidBundleVersionCode: 2
   AndroidMinSdkVersion: 18
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -248,8 +248,8 @@ PlayerSettings:
   AndroidTargetArchitectures: 5
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: Gen315Key.keystore
+  AndroidKeyaliasName: gen315key
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
   AndroidEnableTango: 0

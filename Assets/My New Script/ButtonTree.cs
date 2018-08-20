@@ -31,7 +31,10 @@ public class ButtonTree : MonoBehaviour {
 	// 선악과 아웃라인 정지시키기
 	public GameObject mainTreeOutline;
 	public Outline outLineForTree;
-
+	
+	// 선악과 텍스트 정지시키기
+	public GameObject mainTreeText;
+	public TextMeshPro treeGen0217;
 
 	// 제목 달기
 	public TextFade god;
@@ -64,6 +67,7 @@ public class ButtonTree : MonoBehaviour {
 		edenMoodLightControl = GameObject.Find("EdenMoodLight").GetComponent<EdenMoodLightController>();
 		// 선악과 아웃라인 끄기
 		outLineForTree = mainTreeOutline.GetComponent<Outline>();
+		treeGen0217 = mainTreeText.GetComponent<TextMeshPro>();
 
 		// 제목달기
 		god = GameObject.Find("God").GetComponent<TextFade>();
@@ -91,6 +95,7 @@ public class ButtonTree : MonoBehaviour {
 				if(hit.transform.name == "tree-baobab")
                 {
 					outLineForTree.enabled = false;
+					treeGen0217.enabled = false;
                     originalMan.displayInfo = false;
 					gen0128.displayInfo = false;
 					LeaveGod();
