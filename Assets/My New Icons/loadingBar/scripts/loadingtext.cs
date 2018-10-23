@@ -29,7 +29,7 @@ public class loadingtext : MonoBehaviour {
             a = (int)(imageComp.fillAmount * 100);
             if (a > 0 && a <= 33)
             {
-                textNormal.text = "Loading...";
+                // textNormal.text = "Loading...";
             }
             else if (a > 33 && a <= 67)
             {

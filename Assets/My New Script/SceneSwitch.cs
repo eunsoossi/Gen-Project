@@ -11,7 +11,8 @@ public class SceneSwitch : MonoBehaviour {
 	}
 
 	public void SceneSwitcher2()
-	{
+	{	
+		PlayerPrefs.DeleteAll();
 		SceneManager.LoadScene(0);
 	}
 }
