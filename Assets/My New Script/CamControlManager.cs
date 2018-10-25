@@ -505,7 +505,14 @@ public class CamControlManager : MonoBehaviour {
 		}
 		else
 		{
-			originalProblem.displayInfo = true;
+			if (problemsOfMan.displayInfo)
+			{
+				originalProblem.displayInfo = false;
+			}
+			else
+			{
+				originalProblem.displayInfo = true;
+			}
 			bibleClickManager.BibleState(3);
 			outlineColorOnTree = false;
 			// treeGen0217.enabled = false;
@@ -554,9 +561,10 @@ public class CamControlManager : MonoBehaviour {
 	}
 	IEnumerator WaitForDrugAddictOn() {
 		yield return new WaitForSeconds(1f);
-		originalProblem.displayInfo = false;
 		originalMan.displayInfo = false;
+		originalProblem.displayInfo = false;
 		problemsOfMan.displayInfo = true;
+		Debug.Log("근본문제" + "    " + originalProblem.displayInfo);
 		// drugAddictLightS.SetActive(true);
 		yield return new WaitForSeconds(1.4f);
 		audioDrugAddictLight.Play();
@@ -577,6 +585,11 @@ public class CamControlManager : MonoBehaviour {
 		// FadeBlockOnOff(1);
 	}
 	void TurnIdolOn() {
+		if (problemsOfMan.displayInfo)
+		{
+			originalProblem.displayInfo = false;
+		}
+		Debug.Log("근본문제222222" + "    " + originalProblem.displayInfo);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerDrugAddict); 
 		audioIdol.Play();
 		idolLights.SetActive(true);
