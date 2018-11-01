@@ -564,7 +564,7 @@ public class CamControlManager : MonoBehaviour {
 		originalMan.displayInfo = false;
 		originalProblem.displayInfo = false;
 		problemsOfMan.displayInfo = true;
-		Debug.Log("근본문제" + "    " + originalProblem.displayInfo);
+		// Debug.Log("근본문제" + "    " + originalProblem.displayInfo);
 		// drugAddictLightS.SetActive(true);
 		yield return new WaitForSeconds(1.4f);
 		audioDrugAddictLight.Play();
@@ -589,7 +589,7 @@ public class CamControlManager : MonoBehaviour {
 		{
 			originalProblem.displayInfo = false;
 		}
-		Debug.Log("근본문제222222" + "    " + originalProblem.displayInfo);
+		// Debug.Log("근본문제222222" + "    " + originalProblem.displayInfo);
 		mainCamera.cullingMask = (1 << cullingLayerDefault) | (1 << cullingLayerIdol) | (1 << cullingLayerDrugAddict); 
 		audioIdol.Play();
 		idolLights.SetActive(true);

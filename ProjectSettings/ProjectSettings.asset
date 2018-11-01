@@ -119,7 +119,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.23
+  bundleVersion: 1.253
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -158,8 +158,8 @@ PlayerSettings:
     iOS: com.DarakLab.Gen315
     tvOS: com.Company.ProductName
   buildNumber:
-    iOS: 4
-  AndroidBundleVersionCode: 8
+    iOS: 6
+  AndroidBundleVersionCode: 12
   AndroidMinSdkVersion: 18
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
